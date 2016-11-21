@@ -1,0 +1,42 @@
+<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+		controllerName="wth.split" xmlns:html="http://www.w3.org/1999/xhtml">
+	<SplitApp xmlns="sap.m"
+		id="splitapp"
+		busy="false"
+		busyIndicatorDelay="1000"
+		visible="true"
+		fieldGroupIds=""
+		defaultTransitionNameDetail="slide"
+		defaultTransitionNameMaster="slide"
+		mode="ShowHideMode"
+		masterButtonText=""
+		backgroundColor=""
+		backgroundImage=""
+		backgroundRepeat="false"
+		backgroundOpacity="1"
+		homeIcon=""
+		initialDetail=""
+		initialMaster=""
+		validateFieldGroup=""
+		masterNavigate=""
+		afterMasterNavigate=""
+		masterButton=""
+		beforeMasterOpen=""
+		afterMasterOpen=""
+		beforeMasterClose=""
+		afterMasterClose=""
+		detailNavigate=""
+		afterDetailNavigate=""
+		orientationChange="">
+		<tooltip></tooltip> <!-- sap.ui.core.TooltipBase -->
+		<dependents></dependents> <!-- sap.ui.core.Control, since 1.19 -->
+		<masterPages>
+		    <mvc:XMLView viewName="wth.Master"></mvc:XMLView>
+		</masterPages> <!-- sap.ui.core.Control -->
+		<detailPages>
+		    <mvc:XMLView viewName="wth.Detail"></mvc:XMLView>
+		</detailPages> <!-- sap.ui.core.Control -->
+		
+	</SplitApp>
+
+</core:View>

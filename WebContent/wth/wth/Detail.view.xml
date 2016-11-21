@@ -1,0 +1,118 @@
+<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+		controllerName="wth.Detail" xmlns:html="http://www.w3.org/1999/xhtml"
+		xmlns:semantic="sap.m.semantic">
+
+    	<semantic:DetailPage
+			id="page"
+			navButtonPress="onNavBack"	
+			title="Ticket"
+>
+
+		<semantic:content>
+			<ObjectHeader
+			    	binding="{/0}"
+					id="objectHeader"
+					title="{description}"
+					icon="sap-icon://group"
+					status=""
+					number="{id}">
+				<statuses>
+					<ObjectStatus
+						text="HR Direct"
+						icon="sap-icon://group"
+						state="None" />
+					<ObjectStatus
+					    title="Status"
+						text="Confirmed automatically"
+						icon=""
+						state="Success" />
+				</statuses>				
+			</ObjectHeader>
+			<IconTabBar
+					id="iconTabBar"
+					class="sapUiResponsiveContentPadding">
+				<items>
+					<IconTabFilter
+							id="iconTabBarFilter1"
+							icon="sap-icon://notes"
+							>
+					</IconTabFilter>
+					<IconTabFilter
+							id="iconTabBarFilter2"
+							icon="sap-icon://hint"
+							>
+					</IconTabFilter>
+ 					<IconTabFilter
+							id="iconTabBarFilter3"
+							icon="sap-icon://attachment"
+							>
+					</IconTabFilter>	 
+				</items>
+			</IconTabBar>
+<!-- 			<Table
+					id="lineItemsList"
+					width="auto"
+					items="{LineItems}"
+					updateFinished="onListUpdateFinished"
+					noDataText="{i18n>detailLineItemTableNoDataText}"
+					busyIndicatorDelay="{detailView>/lineItemTableDelay}"
+					class="sapUiResponsiveMargin">
+				<headerToolbar>
+					<Toolbar id="lineItemsToolbar">
+						<Title
+								id="lineItemsHeader"
+								text="{detailView>/lineItemListTitle}"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column>
+						<Text text="{i18n>detailLineItemTableIDColumn}"/>
+					</Column>
+					<Column
+							minScreenWidth="Tablet"
+							demandPopin="true"
+							hAlign="Right">
+						<Text text="{i18n>detailLineItemTableUnitNumberColumn}"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<ObjectIdentifier
+									title="{Name}"
+									text="{LineItemID}"/>
+							<ObjectNumber
+								number="{
+									path: 'UnitNumber',
+									formatter: '.formatter.currencyValue'
+								}"
+								unit="{UnitOfMeasure}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table> -->
+			<List
+				headerText=""
+				items="{/}"
+				 >
+				<FeedListItem
+					sender="{userid}"
+					icon="sap-icon://notes"
+					iconDensityAware="false"
+					
+					timestamp="11.06.2016 at 04:29:10"
+					text="{comment}" />
+			</List>
+
+		</semantic:content>
+
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction
+					id="shareEmail"
+					press="onShareEmailPress"/>
+		</semantic:sendEmailAction>
+
+	</semantic:DetailPage>
+    
+    
+</core:View>

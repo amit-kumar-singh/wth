@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+
+		<script src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+				id="sap-ui-bootstrap"
+				data-sap-ui-libs="sap.m"
+				data-sap-ui-theme="sap_bluecrystal">
+		</script>
+		<!-- only load the mobile lib "sap.m" and the "sap_bluecrystal" theme -->
+
+		<script>
+		sap.ui.localResources("wth");	
+		
+		var app = new sap.m.App("homeApp", {});
+		var page = new sap.m.Page("containerPage", {});
+		page.setShowHeader(false);
+		//({initialPage:"containerPage"});
+		
+		var pageButton = sap.ui.view({id:"splitApp",viewName:"wth.split",type:sap.ui.core.mvc.ViewType.XML});
+					
+		//app.addContent(pageButton);
+		//app.addContent(pageDialog);
+		page.addContent(pageButton);
+		//page.addContent(pageDialog);
+		app.addPage(page);
+		//app.addPage(pageDialog);
+		app.placeAt("content");		
+		
+		</script>
+
+	</head>
+	<body class="sapUiBody" role="application" style="background-image: linear-gradient(to bottom,#2da9b1 0,#178299 50%,#1a4c7d 100%);">
+		<div id="content" style="width:70%;margin-left:15%"></div>
+	</body>
+</html>

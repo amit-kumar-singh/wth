@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="wth/js/jquery.js"></script>
+  <script type="text/javascript" src="wth/js/voice.js"></script>
+  
+  <script>
+	
+	var revaData = {
+			"date": "",
+			"carId": "Car1",
+			"timeIn": "",
+			"timeOut": "",
+			"to": "",
+			"from": "SAP Campus",
+			"email": "amit.kumar.singh02@sap.com",
+			"dl": "",
+			"dlValidity": "",
+			"purpose": "",
+			"passengers": "",
+			"starting_km": "",
+			"ending_km": "",
+			"starting_charge": "",
+			"ending_charge": "",
+			"code": "s13Wi"
+		};
+	
+
+	var accessToken = "48b24e06a44c4302a881d96edc5484c1";
+	var baseUrl = "https://api.api.ai/v1/";
+	
+
+	$(document).ready(function() {
+		$("#input").keypress(function(event) {
+			if (event.which == 13) {
+				event.preventDefault();
+				send();
+			}
+		});
+		$("#rec").click(function(event) {
+			switchRecognition();
+		});
+	});
+
+	var recognition;
+
+	function startRecognition() {
+		recognition = new webkitSpeechRecognition();
+		recognition.onstart = function(event) {
+			updateRec();
+		};
+		recognition.onresult = function(event) {
+			var text = "";
+		    for (var i = event.resultIndex; i < event.results.length; ++i) {
+		    	text += event.results[i][0].transcript;
+		    }
+		    setInput(text);
+			stopRecognition();
+		};
+		recognition.onend = function() {
+			stopRecognition();
+		};
+		recognition.lang = "en-US";
+		recognition.start();
+	}
+
+	function stopRecognition() {
+		if (recognition) {
+			recognition.stop();
+			recognition = null;
+		}
+		updateRec();
+	}
+
+	function switchRecognition() {
+		if (recognition) {
+			stopRecognition();
+		} else {
+			startRecognition();
+		}
+	}
+
+	function setInput(text) {
+		$("#input").val(text);
+		send();
+	}
+
+	function updateRec() {
+		$("#rec").text(recognition ? "Stop" : "Speak");
+	}
+	
+	function processUserITQuery(){
+	
+		var url = "/wth/logic/question.xsjs";
+		$.ajax({
+			type: "GET",
+			url: url,
+			contentType: "application/json",
+			dataType: "json",
+			success: function(data) {
+				console.log("success"+data);
+				for(var i=0;i<data.length;i++){
+					//setTimeout(function(){playVoiceMessages(data[i].Solution)}, 100);
+					playVoiceMessages(data[i].Solution);
+				}
+			},
+			error: function() {
+				setResponse("Internal Server Error");
+			}
+		});
+		
+	}
+	
+	function sendBookingToReva(){
+		console.log(revaData);
+		var url = "http://inblrllssc733.apj.global.corp.sap:8000/RevaApp/Reva/WebContent/revaprojectui5/logic/DoBooking.xsjs";
+		$.ajax({
+			type: "POST",
+			url: url,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			data: JSON.stringify(revaData),
+			success: function(data) {
+				console.log("success"+data);
+				if(data.status === 'success'){
+                    message = "Your booking #" + data.bookingId+" is successful!" ;
+                    playVoiceMessages(message);
+                }
+				//setTimeout(function(){startRecognition()}, 500);
+			},
+			error: function() {
+				setResponse("Internal Server Error");
+			}
+		});
+		
+		//playVoiceMessages("Reva car has been booked successfully!");
+	}
+var contextList = ["book-car"];
+	function send() {
+		var text = $("#input").val();
+		
+		$.ajax({
+			type: "POST",
+			url: baseUrl + "query/",
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			async:false,
+			headers: {
+				"Authorization": "Bearer " + accessToken
+			},
+			data: JSON.stringify({ q: text, lang: "en" , resetContexts:true, contexts:contextList}),
+
+			success: function(data) {
+				response = data;
+				if(response.result.action === "book.date"){
+					var date = response.result.parameters.date;
+					var actualDate = date.slice(2, 4) +''+ date.slice(5, 7) +''+ date.slice(8, 10);
+					revaData.date = actualDate;
+				}else if(response.result.action === "book.time"){
+					var toTime = response.result.parameters.fromTime;
+					
+					var fromTime = response.result.parameters.toTime;
+					
+					revaData.timeIn = toTime;
+					revaData.timeOut = fromTime;
+				}else if(response.result.action === "book.place"){
+					var toPlace = response.result.parameters.place;
+					revaData.to = toPlace;
+				}else if(response.result.action === "book.purpose"){
+					var toPurpose = response.result.parameters.purpose;
+					revaData.purpose = toPurpose;
+				}else if(response.result.action === "it1"){
+					playVoiceMessages(response.result.speech);
+					stopRecognition();
+					processUserITQuery();
+					return;
+				}else if(response.result.action === "book.car"){
+					contextList = ["book-car"];
+				}
+				
+				
+			if(revaData.date !== "" && revaData.to !== "" && revaData.timeIn !== "" && revaData.timeOut !== "" && revaData.purpose !== ""){
+				sendBookingToReva();
+				return;
+			}
+					
+					contextList = response.result.metadata.contexts;
+					stopRecognition();
+					playVoiceMessages(response.result.speech);
+					setResponse(JSON.stringify(data, undefined, 2));
+					setTimeout(function(){startRecognition()}, 500);
+					//startRecognition();
+				
+				
+			},
+			error: function() {
+				setResponse("Internal Server Error");
+				}
+		});
+		setResponse("Loading...");
+	}
+
+	function setResponse(val) {
+		$("#response").text(val);
+	}
+	 $(document).ready(function() {
+        startRecognition();
+	});
+
+</script>
+<style type="text/css">
+	body { width: 500px; margin: 0 auto; text-align: center; margin-top: 20px; }
+	div {  position: absolute; }
+	input { width: 400px; }
+	button { width: 50px; }
+	textarea { width: 100%; }
+</style>
+</head>
+<body>
+<div>
+	<input id="input" type="text" style="height:20px;display:none"><button id="rec" style="height:20px;">speak</button> <img  src="wth/image/mic.gif"/>
+    <div style="display:none"><textarea id="response" cols="40" rows="20"></textarea></div>
+</div>
+</body>
+</html>

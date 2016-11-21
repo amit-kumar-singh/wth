@@ -1,0 +1,1 @@
+create Table tickets(id varchar(10), description varchar(500),category varchar(200), processtype varchar(200), urgency varchar(100), eqno varchar(100), system varchar(200),building varchar(100), room varchar(100), comment varchar(500),username varchar(200), userid varchar(10));
